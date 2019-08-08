@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>homework2</title>
+    <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css" />
+    <!-- LIBS -->
+    <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
+    <!-- ENDLIBS -->
+    <script type="text/javascript" src="../../ext-all.js"></script>
+    <script>
+        Ext.onReady(function() {
+            var navHandler = function (direction) {
+                var window=Ext.getCmp('window').layout
+                var pre = Ext.getCmp('move-prev')
+                var next = Ext.getCmp('move-next')
+                var activeId=window.activeItem.id
+
+                if (activeId == '0') {
+                    if (direction == 1) {
+                        window.setActiveItem(1);
+                        pre.setDisabled(false);
+                    }
+                } else if (activeId == '1') {
+                    if (direction == -1) {
+                        window.setActiveItem(0);
+                        pre.setDisabled(true);
+                    } else {
+                        window.setActiveItem(2);
+                        next.setDisabled(true);
+                    }
+                } else if (activeId == '2') {
+                    if (direction == -1) {
+                        window.setActiveItem(1);
+                        next.setDisabled(false);
+                    }
+                }
+            }
+
+            var changeAns=function (self,checked) {
+                var id=self.ownerCt.id
+                var value
+                if(id=='0'){
+                    value=self.value
+                    Ext.getCmp("q1").setValue(value)
+                }else {
+                    var arr=Ext.getCmp("mutiCheck").getValue()
+                    value=arr.map(function (item) {
+                        return item.value
+                    }).join("")
+                    Ext.getCmp("q2").setValue(value)
+                }
+            }
+
+            var win = new Ext.Window({
+                id:'window',
+                width: 400,
+                height: 300,
+                layout: 'card',
+                title:'ques',
+                activeItem:0,
+                bbar: [{
+                    id: 'move-prev',
+                    text: '上一步',
+                    handler: navHandler.createDelegate(this, [-1]),
+                    disabled: true
+                }, '->',{
+                    id: 'move-next',
+                    text: '下一步',
+                    handler: navHandler.createDelegate(this, [1])
+                }],
+                items: [{
+                    id:'0',
+                    xtype:'fieldset',
+                    title: 'Q1：番茄酱属于以下哪种垃圾？（单选）',
+                    defaultType: 'radio',
+                    items: [
+                        {value:'A',name:'ans',boxLabel: '干垃圾',listeners:{'check':changeAns}},
+                        {value:'B',name:'ans',boxLabel: '湿垃圾',listeners:{'check':changeAns}},
+                        {value:'C',name:'ans',boxLabel: '有害垃圾',listeners:{'check':changeAns}},
+                        {value:'D',name:'ans',boxLabel: '可回收物',listeners:{'check':changeAns}}
+                        ]
+                },{
+                    id:'1',
+                    xtype:'fieldset',
+                    title: 'Q50：王大叔出门遛狗后，哪些是正确处理狗粑粑的方法？（多选）',
+                    items: [
+                        {
+                            id:'mutiCheck',
+                            xtype: 'checkboxgroup',
+                            columns: 1,
+                            items: [
+                                {value: 'A', boxLabel: '把粑粑用废纸带回家冲掉', listeners: {'check': changeAns}},
+                                {value: 'B', boxLabel: '受污染的报纸按有害垃圾处理', listeners: {'check': changeAns}},
+                                {value: 'C', boxLabel: '没受污染的报纸按可回收垃圾处理', listeners: {'check': changeAns}},
+                                {value: 'D', boxLabel: '受污染的报纸浸水后按湿垃圾处理', listeners: {'check': changeAns}}
+                            ]
+                        }
+                        ]
+                },{
+                    id:'2',
+                    xtype:'fieldset',
+                    title: '答题结果汇总：',
+                    items: [{
+                        xtype:'form',
+                        items:[{
+                            xtype:'textfield',
+                            id:'q1',
+                            fieldLabel:'第一题',
+                            disabled:true
+                        },{
+                            xtype:'textfield',
+                            id:'q2',
+                            fieldLabel:'第二题',
+                            disabled:true
+                        }]
+                    },{
+                        xtype:'button',
+                        text:'submit',
+                        style:'text-align:center;',
+                        listeners:{
+                            'click':function () {
+                                Ext.MessageBox.alert("Congratulations")
+                            }
+                        }
+                    }]
+                }]
+            });
+            win.show()
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>
